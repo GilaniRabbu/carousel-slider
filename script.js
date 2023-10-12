@@ -1,16 +1,38 @@
-const buttons = document.querySelectorAll('[data-carousel-btn]');
+document.addEventListener('DOMContentLoaded', function () {
+    const wrapper = document.querySelector('.carousel-wrapper');
+    const images = document.querySelectorAll('.carousel-wrapper img');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const offset = btn.dataset.carouselButton === 'next' ? 1 : -1
-        const slides = btn.closest('[data-carousel]').querySelector('[data-slides]')
+    let currentIndex = 0;
 
-        const activeSlide = slides.querySelector('[data-active]')
-        let newIndex = [...slides.children].indexOf(activeSlide) + offset
-        if (newIndex < 0) newIndex = slides.children.length - 1
-        if (newIndex >= slides.children.length) newIndex = 0
+    function showImage(index) {
+        if (index < 0) {
+            currentIndex = images.length - 1;
+        }
+        else if (index >= images.length) {
+            currentIndex = 0;
+        }
+        else {
+            currentIndex = index;
+        }
+        wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
 
-        slides.children[newIndex].dataset.active = true
-        delete activeSlide.dataset.active
-    });
+    function showNextImage() {
+        showImage(currentIndex + 1);
+    }
+
+    function showPrevImage() {
+        showImage(currentIndex - 1);
+    }
+
+    function startAutoChange() {
+        setInterval(showNextImage, 6000); // change image every 6 seconds
+    }
+
+    nextBtn.addEventListener('click', showNextImage);
+    prevBtn.addEventListener('click', showPrevImage);
+
+    startAutoChange(); // start automatic image change
 });
